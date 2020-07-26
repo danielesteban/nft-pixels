@@ -1,6 +1,8 @@
 nft-pixels
 ==
 
+![screenshot](screenshot.png)
+
 #### Local development
 
 ```bash

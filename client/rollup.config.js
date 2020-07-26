@@ -9,6 +9,8 @@ import { terser } from 'rollup-plugin-terser';
 
 const production = !process.env.ROLLUP_WATCH;
 
+require('dotenv').config();
+
 export default {
   input: path.join(__dirname, 'src', 'main.js'),
   output: {

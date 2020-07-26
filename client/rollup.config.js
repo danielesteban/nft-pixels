@@ -2,6 +2,7 @@ import path from 'path';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import livereload from 'rollup-plugin-livereload';
+import replace from '@rollup/plugin-replace';
 import resolve from '@rollup/plugin-node-resolve';
 import svelte from 'rollup-plugin-svelte';
 import { terser } from 'rollup-plugin-terser';
@@ -27,6 +28,9 @@ export default {
     }),
     commonjs(),
     json(),
+    replace({
+      __ContractAddress__: JSON.stringify(process.env.ADDRESS),
+    }),
     ...(production ? [terser()] : [livereload(path.join(__dirname, 'dist'))]),
   ],
   watch: {

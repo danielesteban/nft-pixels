@@ -20,6 +20,7 @@
     "@rollup/plugin-commonjs": "^14.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^8.4.0",
+    "@rollup/plugin-replace": "^2.3.3",
     "@truffle/hdwallet-provider": "^1.0.40",
     "colorsys": "^1.0.22",
     "dotenv": "^8.2.0",

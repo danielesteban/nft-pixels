@@ -2,8 +2,6 @@ import { writable } from 'svelte/store';
 import PixelsToken from './PixelsToken.json';
 import rasterize from './rasterizer';
 
-const PixelsTokenAddress = '0x41e45b3f81f7B15964A57A65057603Acaf14FA47';
-
 const web3 = (() => {
   const { Web3 } = window;
   if (Web3.givenProvider) {
@@ -23,7 +21,7 @@ if (hasWeb3Support) {
   const { TruffleContract } = window;
   const artifact = TruffleContract(PixelsToken);
   artifact.setProvider(web3.currentProvider);
-  artifact.at(PixelsTokenAddress)
+  artifact.at(__ContractAddress__)
     .then((instance) => {
       contract = instance;
       tokens.fetch(); // eslint-disable-line no-use-before-define

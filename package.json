@@ -10,7 +10,7 @@
     "client:watch": "npm run client:build -- -w",
     "client:serve": "static client",
     "compile": "truffle compile",
-    "migrate": "truffle migrate --network development",
+    "migrate": "cross-env NODE_ENV=production truffle migrate --network development",
     "ganache": "ganache-cli -p 8545 -q",
     "start": "npm-run-all --parallel client:watch client:serve",
     "test": "truffle test"
@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@openzeppelin/test-helpers": "^0.5.6",
+    "cross-env": "^7.0.2",
     "eslint": "^7.5.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.0",

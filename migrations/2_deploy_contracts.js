@@ -6,6 +6,9 @@ const PixelsToken = artifacts.require('PixelsToken');
 module.exports = (deployer) => (
   deployer.deploy(PixelsToken)
     .then(({ address }) => {
+      if (process.env.NODE_ENV !== 'production') {
+        return;
+      }
       const envPath = path.join(__dirname, '..', '.env');
       let env;
       try {

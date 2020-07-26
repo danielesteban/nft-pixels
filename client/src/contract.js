@@ -2,18 +2,13 @@ import { writable } from 'svelte/store';
 import PixelsToken from './PixelsToken.json';
 import rasterize from './rasterizer';
 
-const web3 = (() => {
-  const { Web3 } = window;
-  if (Web3.givenProvider) {
-    const web3 = new Web3(Web3.givenProvider);
-    if (web3.currentProvider.autoRefreshOnNetworkChange) {
-      web3.currentProvider.autoRefreshOnNetworkChange = false;
-    }
-    return web3;
-  }
-  return undefined;
-})();
-
+const { Web3 } = window;
+const web3 = Web3.givenProvider ? (
+  new Web3(Web3.givenProvider)
+) : undefined;
+if (web3 && web3.currentProvider.autoRefreshOnNetworkChange) {
+  web3.currentProvider.autoRefreshOnNetworkChange = false;
+}
 export const hasWeb3Support = !!web3;
 
 let contract;

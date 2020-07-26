@@ -12,11 +12,11 @@ cd nft-pixels
 # install dependencies
 npm install
 # start local blockchain:
-# once started, copy & import a "private key" to your wallet
 npm run ganache
-# deploy the contract on another terminal:
-# once deployed copy the "contract address"
+# once started, copy & import a "private key" to your wallet
+
+# from another terminal,
+# deploy the contract & start the client:
 npm run migrate
-# finally, you can start the client on the same terminal:
-ADDRESS=0x000000000THECONTRACTADDRESSYOUJUSTCOPIED npm start
+npm start
 ```

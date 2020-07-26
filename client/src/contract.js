@@ -97,7 +97,7 @@ export const mint = (account, pixels) => {
   if (!contract) {
     return Promise.reject();
   }
-  return contract.mintPixels(pixels, { from: account })
+  return contract.mintPixels(pixels, { from: account, value: web3.utils.toWei('0.005', 'ether') })
     .then(({ logs: [{ args: { tokenId } }] }) => (
       tokens.unshift(tokenId.toString())
     ));

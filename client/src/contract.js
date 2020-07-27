@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store';
-import PixelsToken from './PixelsToken.json';
+import PixelsToken from '../artifacts/PixelsToken.json';
+import TokenOffer from '../artifacts/TokenOffer.json';
 import rasterize from './rasterizer';
 
 const { Web3 } = window;
@@ -12,13 +13,22 @@ if (web3 && web3.currentProvider.autoRefreshOnNetworkChange) {
 export const hasWeb3Support = !!web3;
 
 let contract;
+let offers;
 if (hasWeb3Support) {
   const { TruffleContract } = window;
-  const artifact = TruffleContract(PixelsToken);
-  artifact.setProvider(web3.currentProvider);
-  artifact.at(__ContractAddress__)
-    .then((instance) => {
-      contract = instance;
+  Promise.all(
+    [
+      { artifact: TokenOffer, address: __OffersAddress__ },
+      { artifact: PixelsToken, address: __TokensAddress__ },
+    ].map(({ artifact, address }) => {
+      const contract = TruffleContract(artifact);
+      contract.setProvider(web3.currentProvider);
+      return contract.at(address);
+    })
+  )
+    .then(([offersInstance, tokensInstance]) => {
+      offers = offersInstance;
+      contract = tokensInstance;
       tokens.fetch(); // eslint-disable-line no-use-before-define
     });
 }
@@ -46,17 +56,50 @@ if (hasWeb3Support) {
   account.setup();
 }
 
+export const meta = (() => {
+  const { subscribe, update } = writable({});
+  return {
+    subscribe,
+    fetch: (tokenId) => {
+      if (!contract || !offers) {
+        return Promise.reject();
+      }
+      return contract.ownerOf(tokenId)
+        .then((owner) => {
+          if (owner !== offers.address) {
+            return { owner };
+          }
+          return offers.get(tokenId)
+            .then(({ owner, value }) => ({
+              owner,
+              value,
+              formattedValue: `${web3.utils.fromWei(value, 'ether')} ETH`,
+            }));
+        })
+        .then((meta) => (
+          update((state) => ({
+            ...state,
+            [tokenId]: meta,
+          }))
+        ));
+    },
+  };
+})();
+
 export const pixels = (() => {
   const { subscribe, update } = writable({});
   return {
     subscribe,
-    load: (tokenId) => {
+    fetch: (tokenId) => {
       if (!contract) {
         return Promise.reject();
       }
       return contract.getPixels(tokenId)
         .then((pixels) => (
-          update((tokens) => ({ ...tokens, [tokenId]: rasterize(pixels) }))
+          update((state) => ({
+            ...state,
+            [tokenId]: rasterize(pixels),
+          }))
         ));
     },
   };
@@ -89,11 +132,51 @@ export const tokens = (() => {
           set(tokens.map((tokenId) => tokenId.toString()))
         ));
     },
-    unshift: (token) => update((tokens) => [token, ...(tokens || [])]),
+    unshift: (token) => update((state) => [token, ...(state || [])]),
   };
 })();
 
-export const mint = (account, pixels) => {
+export const buy = ({ account, tokenId, value }) => {
+  if (!contract || !offers) {
+    return Promise.reject();
+  }
+  return offers.buy(tokenId, { from: account, value })
+    .then(() => (
+      meta.fetch(tokenId)
+    ));
+};
+
+export const cancelOffer = ({ account, tokenId }) => {
+  if (!contract || !offers) {
+    return Promise.reject();
+  }
+  return offers.cancel(tokenId, { from: account })
+    .then(() => (
+      meta.fetch(tokenId)
+    ));
+};
+
+export const createOffer = ({ account, tokenId, value }) => {
+  if (!contract || !offers) {
+    return Promise.reject();
+  }
+  return contract.getApproved(tokenId)
+    .then((approved) => (
+      approved !== offers.address ? (
+        contract.approve(offers.address, tokenId, { from: account })
+      ) : (
+        Promise.resolve()
+      )
+    ))
+    .then(() => (
+      offers.create(tokenId, web3.utils.toWei(`${value}`, 'ether'), { from: account })
+    ))
+    .then(() => (
+      meta.fetch(tokenId)
+    ));
+};
+
+export const mint = ({ account, pixels }) => {
   if (!contract) {
     return Promise.reject();
   }

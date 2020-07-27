@@ -3,7 +3,8 @@
     "browser": true
   },
   "globals": {
-    "__ContractAddress__": "readonly"
+    "__OffersAddress__": "readonly",
+    "__TokensAddress__": "readonly"
   },
   "plugins": [
     "svelte3"

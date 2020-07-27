@@ -30,6 +30,15 @@ button:disabled {
   cursor: default;
 }
 
+input[type="email"], input[type="number"], input[type="password"], input[type="text"] {
+  vertical-align: middle;
+  border: 1px solid #000;
+  border-radius: 4px;
+  padding: 0.4rem 0.5rem;
+  outline: 0;
+  margin: 0;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   background-color: rgba(255, 255, 255, 0);

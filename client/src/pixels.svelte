@@ -1,11 +1,36 @@
 <script>
-  import { pixels } from './contract';
+  import {
+    account,
+    meta,
+    pixels,
+    buy,
+    createOffer,
+    cancelOffer,
+  } from './contract';
+import App from './app.svelte';
 
   export let tokenId;
 
   $: formattedId = `#${('000000' + tokenId).slice(-6)}`;
+  $: data = $meta[tokenId];
   $: image = $pixels[tokenId];
-  $: !image && pixels.load(tokenId);
+  $: {
+    !data && meta.fetch(tokenId);
+    !image && pixels.fetch(tokenId);
+  }
+
+  const onBuy = () => (
+    buy({ account: $account, tokenId, value: data.value })
+  );
+
+  let value = 0;
+  const onCreateOffer = () => (
+    createOffer({ account: $account, tokenId, value })
+  );
+
+  const onCancelOffer = () => (
+    cancelOffer({ account: $account, tokenId })
+  );
 </script>
 
 <pixels>
@@ -15,6 +40,34 @@
     <placeholder />
   {/if}
   <id>{formattedId}</id>
+  <actions>
+    {#if data}
+      {#if data.value !== undefined}
+        <value>{data.formattedValue}</value>
+        {#if data.owner === $account}
+          <button on:click={onCancelOffer}>
+            Cancel offer
+          </button>
+        {:else}
+          <button on:click={onBuy}>
+            Buy
+          </button>
+        {/if}
+      {:else if data.owner === $account}
+        <input
+          type="number"
+          bind:value={value}
+        />
+        <button on:click={onCreateOffer}>
+          Create offer
+        </button>
+      {:else}
+        <feedback>No current offer</feedback>
+      {/if}
+    {:else}
+      <feedback>Loading...</feedback>
+    {/if}
+  </actions>
 </pixels>
 
 <style>
@@ -27,15 +80,37 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   }
 
-  id {
+  id, actions {
     display: block;
     padding: 0.5rem 0;
     border-top: 4px solid #222;
     border-bottom: 4px solid #222;
   }
 
+  actions {
+    border-top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  actions > input {
+    width: 50px;
+    margin-right: 0.5rem;
+  }
+
+  value {
+    display: block;
+    margin-right: 1rem;
+  }
+
+  feedback {
+    display: block;
+    padding: 0.5rem 0;
+  }
+
   img {
-    vertical-align: middle;
+    display: block;
   }
 
   placeholder {

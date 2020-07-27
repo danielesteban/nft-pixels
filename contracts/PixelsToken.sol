@@ -25,9 +25,12 @@ contract PixelsToken is ERC721, ERC721Burnable, Ownable {
   function getPixels(uint256 tokenId)
     public
     view
-    returns(bytes3[SIZE] memory)
+    returns (bytes3[SIZE] memory)
   {
-    require(_exists(tokenId), "PixelsToken: pixels query for nonexistent token");
+    require(
+      _exists(tokenId),
+      "PixelsToken: pixels query for nonexistent token"
+    );
     return _store[tokenId];
   }
 
@@ -38,7 +41,7 @@ contract PixelsToken is ERC721, ERC721Burnable, Ownable {
     returns (uint256)
   {
     require(
-      msg.value >= COST || owner() == _msgSender(),
+      msg.value >= COST || _msgSender() == owner(),
       "PixelsToken: minting query without enough value"
     );
     uint256 tokenId = _tokenIds.current();

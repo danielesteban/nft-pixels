@@ -31,7 +31,8 @@ export default {
     commonjs(),
     json(),
     replace({
-      __ContractAddress__: JSON.stringify(process.env.ADDRESS),
+      __AuctionAddress__: JSON.stringify(process.env.AUCTION_ADDRESS),
+      __ContractAddress__: JSON.stringify(process.env.CONTRACT_ADDRESS),
     }),
     ...(production ? [terser()] : [livereload(path.join(__dirname, 'dist'))]),
   ],

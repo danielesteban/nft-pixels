@@ -49,7 +49,10 @@
             Cancel offer
           </button>
         {:else}
-          <button on:click={onBuy}>
+          <button
+            disabled={!$account}
+            on:click={onBuy}
+          >
             Buy
           </button>
         {/if}

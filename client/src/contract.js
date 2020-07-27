@@ -36,13 +36,13 @@ if (hasWeb3Support) {
 export const account = (() => {
   const { subscribe, set } = writable();
   if (hasWeb3Support) {
-    web3.currentProvider.on('accountsChanged', (accounts) => {
-      set(accounts[0]);
-    });
+    web3.currentProvider.on('accountsChanged', (accounts) => (
+      set(accounts[0])
+    ));
     web3.eth.getAccounts()
-      .then((accounts) => {
-        set(accounts[0]);
-      });
+      .then((accounts) => (
+        set(accounts[0])
+      ));
   }
   return {
     subscribe,
@@ -62,7 +62,7 @@ export const meta = (() => {
       }
       return contract.ownerOf(tokenId)
         .then((owner) => {
-          if (owner !== offers.address) {
+          if (owner.toLowerCase() !== offers.address.toLowerCase()) {
             return { owner };
           }
           return offers.get(tokenId)
@@ -158,7 +158,7 @@ export const createOffer = ({ account, tokenId, value }) => {
   }
   return contract.getApproved(tokenId)
     .then((approved) => (
-      approved !== offers.address ? (
+      approved.toLowerCase() !== offers.address.toLowerCase() ? (
         contract.approve(offers.address, tokenId, { from: account })
       ) : (
         Promise.resolve()

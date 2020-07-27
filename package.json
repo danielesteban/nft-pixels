@@ -8,7 +8,7 @@
   "scripts": {
     "client:build": "rollup -c client/rollup.config.js",
     "client:watch": "npm run client:build -- -w",
-    "client:serve": "static client",
+    "client:serve": "static -c 1 client",
     "compile": "truffle compile",
     "migrate": "cross-env NODE_ENV=production truffle migrate --network development",
     "ganache": "ganache-cli -p 8545 -q",

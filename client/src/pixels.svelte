@@ -7,18 +7,18 @@
     createOffer,
     cancelOffer,
   } from './contract';
-import App from './app.svelte';
 
   export let tokenId;
 
   $: formattedId = `#${('000000' + tokenId).slice(-6)}`;
   $: data = $meta[tokenId];
+  $: !data && meta.fetch(tokenId);
   $: image = $pixels[tokenId];
-  $: {
-    !data && meta.fetch(tokenId);
-    !image && pixels.fetch(tokenId);
-  }
-
+  $: !image && pixels.fetch(tokenId);
+  $: isOwner = (
+    $account && data && data.owner.toLowerCase() === $account.toLowerCase()
+  );
+  
   const onBuy = () => (
     buy({ account: $account, tokenId, value: data.value })
   );
@@ -44,7 +44,7 @@ import App from './app.svelte';
     {#if data}
       {#if data.value !== undefined}
         <value>{data.formattedValue}</value>
-        {#if data.owner === $account}
+        {#if isOwner}
           <button on:click={onCancelOffer}>
             Cancel offer
           </button>
@@ -53,7 +53,7 @@ import App from './app.svelte';
             Buy
           </button>
         {/if}
-      {:else if data.owner === $account}
+      {:else if isOwner}
         <input
           type="number"
           bind:value={value}

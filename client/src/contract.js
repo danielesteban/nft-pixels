@@ -35,26 +35,22 @@ if (hasWeb3Support) {
 
 export const account = (() => {
   const { subscribe, set } = writable();
+  if (hasWeb3Support) {
+    web3.currentProvider.on('accountsChanged', (accounts) => {
+      set(accounts[0]);
+    });
+    web3.eth.getAccounts()
+      .then((accounts) => {
+        set(accounts[0]);
+      });
+  }
   return {
     subscribe,
-    setup: () => (
-      web3.eth.getAccounts()
-        .then((accounts) => {
-          set(accounts[0]);
-        })
-    ),
     request: () => (
       web3.currentProvider.request({ method: 'eth_requestAccounts' })
-        .then(() => (
-          account.setup()
-        ))
     ),
   };
 })();
-
-if (hasWeb3Support) {
-  account.setup();
-}
 
 export const meta = (() => {
   const { subscribe, update } = writable({});

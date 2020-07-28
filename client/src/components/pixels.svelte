@@ -19,18 +19,35 @@
     $account && data && data.owner.toLowerCase() === $account.toLowerCase()
   );
   
-  const onBuy = () => (
+  let isBuying = false;
+  const onBuy = () => {
+    isBuying = true;
     buy({ account: $account, tokenId, value: data.value })
-  );
+      .catch(() => {})
+      .finally(() => {
+        isBuying = false;
+      });
+  };
 
   let value = 0;
-  const onCreateOffer = () => (
+  let isCreating = false;
+  const onCreateOffer = () => {
+    isCreating = true;
     createOffer({ account: $account, tokenId, value })
-  );
+      .catch(() => {})
+      .finally(() => {
+        isCreating = false;
+      });
+  };
 
-  const onCancelOffer = () => (
+  let isCanceling = false;
+  const onCancelOffer = () => {
+    isCanceling = true;
     cancelOffer({ account: $account, tokenId })
-  );
+      .finally(() => {
+        isCanceling = false;
+      });
+  };
 </script>
 
 <pixels>
@@ -45,15 +62,26 @@
       {#if data.value !== undefined}
         <value>{data.formattedValue}</value>
         {#if isOwner}
-          <button on:click={onCancelOffer}>
-            Cancel offer
+          <button
+            disabled={isCanceling}
+            on:click={onCancelOffer}
+          >
+            {#if isCanceling}
+              Canceling...
+            {:else}
+              Cancel offer
+            {/if}
           </button>
         {:else}
           <button
-            disabled={!$account}
+            disabled={!$account || isBuying}
             on:click={onBuy}
           >
-            Buy
+            {#if isBuying}
+              Buying...
+            {:else}
+              Buy
+            {/if}
           </button>
         {/if}
       {:else if isOwner}
@@ -61,8 +89,15 @@
           type="number"
           bind:value={value}
         />
-        <button on:click={onCreateOffer}>
-          Create offer
+        <button
+          disabled={isCreating}
+          on:click={onCreateOffer}
+        >
+          {#if isCreating}
+            Creating...
+          {:else}
+            Create offer
+          {/if}
         </button>
       {:else}
         <feedback>No current offer</feedback>

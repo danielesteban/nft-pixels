@@ -8,7 +8,7 @@
   // This should prolly be a service that just exports a store.
   // Maybe use the history module and a path-to-regex schema.
   // But this quick&dirty hash router should work for now.
-  let route = {};
+  const route = {};
   const onLocationChange = () => {
     const [id, ...params] = document.location.hash.substr(2).split('/').map((value) => (
       decodeURIComponent(value.trim())

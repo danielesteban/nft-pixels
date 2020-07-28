@@ -54,8 +54,9 @@
   });
 
   let isDrawing = false;
+  let isMinting = false;
   const onMouseMove = ({ clientX, clientY }) => {
-    if (!isDrawing) {
+    if (!isDrawing || isMinting) {
       return;
     }
     const rect = canvas.getBoundingClientRect();
@@ -87,12 +88,16 @@
     isDrawing = false;
   };
 
-  const onMint = () => (
+  const onMint = () => {
+    isMinting = true;
     mint({ account: $account, pixels })
       .then(() => {
         document.location.hash = '#/';
       })
-  );
+      .catch(() => {
+        isMinting = false;
+      })
+  };
 </script>
 
 <svelte:window on:blur={onMouseUp} on:mouseup={onMouseUp} />
@@ -117,43 +122,47 @@
     </pixels>
   </half>
   <half>
-    <div>
-      <tools>
-        <color style={$color ? `background: rgb(${$color.join(',')})` : ''}></color>
-        <button
-          class:primary={tool === 'paint'}
-          on:click={() => { tool = 'paint'; }}
-        >
-          Paint
-        </button>
-        <button
-          class:primary={tool === 'pick'}
-          on:click={() => { tool = 'pick'; }}
-        >
-          Pick
-        </button>
-        <label>
-          <input
-            type="checkbox"
-            bind:checked={showGrid}
-          />
-          Show grid
-        </label>
-      </tools>
-      <ColorPicker
-        bind:color={color}
-        bind:update={pick}
-      />
-      <actions>
-        <button
-          class:primary={$account}
-          disabled={!$account}
-          on:click={onMint}
-        >
-          Mint pixels
-        </button>
-      </actions>
-    </div>
+    {#if isMinting}
+      Minting PixelsToken...
+    {:else}
+      <div>
+        <tools>
+          <color style={$color ? `background: rgb(${$color.join(',')})` : ''}></color>
+          <button
+            class:primary={tool === 'paint'}
+            on:click={() => { tool = 'paint'; }}
+          >
+            Paint
+          </button>
+          <button
+            class:primary={tool === 'pick'}
+            on:click={() => { tool = 'pick'; }}
+          >
+            Pick
+          </button>
+          <label>
+            <input
+              type="checkbox"
+              bind:checked={showGrid}
+            />
+            Show grid
+          </label>
+        </tools>
+        <ColorPicker
+          bind:color={color}
+          bind:update={pick}
+        />
+        <actions>
+          <button
+            class:primary={$account}
+            disabled={!$account}
+            on:click={onMint}
+          >
+            Mint pixels
+          </button>
+        </actions>
+      </div>
+    {/if}
   </half>
 </creator>
 

@@ -1,7 +1,6 @@
 import { writable } from 'svelte/store';
 import PixelsToken from '../../artifacts/PixelsToken.json';
 import TokenOffer from '../../artifacts/TokenOffer.json';
-import rasterize from './rasterizer';
 
 const { Web3 } = window;
 const web3 = Web3.givenProvider ? (
@@ -118,7 +117,7 @@ export const pixels = (() => {
         .then((pixels) => (
           update((state) => ({
             ...state,
-            [tokenId]: rasterize(pixels),
+            [tokenId]: pixels,
           }))
         ));
     },

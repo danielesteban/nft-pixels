@@ -6,7 +6,9 @@
 <gallery>
   {#if $tokens}
     {#each $tokens as tokenId}
-      <Pixels tokenId={tokenId} />
+      <a href="#/token/{tokenId}">
+        <Pixels tokenId={tokenId} />
+      </a>
     {/each}
   {:else}
     <loading>

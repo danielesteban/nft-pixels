@@ -3,7 +3,7 @@
   import Account from './components/account.svelte';
   import Creator from './routes/creator.svelte';
   import Gallery from './routes/gallery.svelte';
-  import Item from './routes/item.svelte';
+  import Token from './routes/token.svelte';
 
   // This should prolly be a service that just exports a store.
   // Maybe use the history module and a path-to-regex schema.
@@ -20,8 +20,8 @@
       case 'new':
         route.component = Creator;
         break;
-      case 'item':
-        route.component = Item;
+      case 'token':
+        route.component = Token;
         break;
     }
     route.params = params.length ? params : undefined;

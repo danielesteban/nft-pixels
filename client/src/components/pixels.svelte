@@ -6,7 +6,7 @@
     buy,
     createOffer,
     cancelOffer,
-  } from './contract';
+  } from '../services/contract';
 
   export let tokenId;
 
@@ -84,7 +84,9 @@
   }
 
   id, actions {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 0.5rem 0;
     border-top: 4px solid #222;
     border-bottom: 4px solid #222;
@@ -92,9 +94,6 @@
 
   actions {
     border-top: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   actions > input {

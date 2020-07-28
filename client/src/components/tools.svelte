@@ -1,7 +1,6 @@
 <script>
   import { hsv2Rgb } from 'colorsys';
-  import { account, mint } from './contract.js';
-  import Pixels from './pixels.svelte';
+  import { account, mint } from '../services/contract.js';
 
   const aux = new Uint32Array(8*8);
   const onMint = () => {
@@ -35,3 +34,9 @@
 >
   Mint pixels (with random data)
 </button>
+
+<style>
+  button {
+    margin: 0 0.25rem;
+  }
+</style>

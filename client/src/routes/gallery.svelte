@@ -20,8 +20,7 @@
     display: flex;
     box-sizing: border-box;
     width: 100%;
-    padding: 3rem;
-    margin-bottom: 64px;
+    padding: 2rem 3rem;
     align-items: center;
     align-content: center;
     justify-content: center;

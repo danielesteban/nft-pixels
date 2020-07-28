@@ -174,12 +174,13 @@
   }
 
   actions {
-    margin: 4rem 0 1rem;
+    margin: 3rem 0 1rem;
     justify-content: center;
   }
 
   actions > button {
-    padding: 1rem 2rem;
+    width: 100%;
+    padding: 1rem 0;
     font-size: 1.4rem;
   }
 </style>

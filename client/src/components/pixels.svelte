@@ -76,7 +76,7 @@
 <style>
   pixels {
     display: block;
-    margin: 1.5rem 1rem;
+    margin: 1rem;
     background: #000;
     border: 4px solid #222;
     border-bottom: 0;

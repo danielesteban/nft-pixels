@@ -2,7 +2,7 @@ const { balance, ether, expectRevert } = require('@openzeppelin/test-helpers');
 
 const PixelsToken = artifacts.require('PixelsToken');
 
-const data = [...Array(8 * 8)].map(() => '0xff00ff');
+const data = [...Array(16 * 16)].map(() => '0xff00ff');
 
 contract('Pixels token', (accounts) => {
   it('Should have deployer as owner', async () => {

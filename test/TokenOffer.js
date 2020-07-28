@@ -7,7 +7,7 @@ contract('Token offers', (accounts) => {
   let tokens;
   before(async () => {
     tokens = await PixelsToken.deployed();
-    await tokens.mintPixels([...Array(8 * 8)].map(() => '0x000000'));
+    await tokens.mintPixels([...Array(16 * 16)].map(() => '0x000000'));
   });
 
   it('Should create an offer', async () => {

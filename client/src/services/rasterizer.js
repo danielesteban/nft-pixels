@@ -1,8 +1,8 @@
 const rasterizer = document.createElement('canvas');
 const upscaler = document.createElement('canvas');
 
-const size = { x: 8, y: 8 };
-const scale = { x: 26, y: 39 };
+const size = { x: 16, y: 16 };
+const scale = { x: 14, y: 21 };
 const data = new ImageData(size.x, size.y);
 
 rasterizer.width = size.x;

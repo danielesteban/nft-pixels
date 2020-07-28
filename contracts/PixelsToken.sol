@@ -14,7 +14,7 @@ contract PixelsToken is ERC721, ERC721Burnable, Ownable {
   Counters.Counter private _tokenIds;
 
   uint128 constant COST = 0.005 ether;
-  uint constant SIZE = 8*8;
+  uint constant SIZE = 16 * 16;
   bytes3[SIZE][] private _store;
 
   constructor() public ERC721("PixelsToken", "PXLS") {

@@ -5,8 +5,8 @@
 
   // This should prolly scale with the viewport
   // But for now it's just scaled for a 1080p desktop browser
-  const size = { x: 8, y: 8 };
-  const scale = { x: 64, y: 96 };
+  const size = { x: 16, y: 16 };
+  const scale = { x: 32, y: 48 };
   const pixels = [...window.crypto.getRandomValues(new Uint32Array(size.x*size.y))].map((n) => {
     const l = ((n >> 24) & 0xFF) / 0xFF;
     return [
@@ -17,11 +17,13 @@
   });
   let color;
   let pick;
+  let showGrid = false;
   let tool = 'paint';
   $: if ($color) tool = 'paint';
 
   let canvas;
   let ctx;
+  let grid;
 
   onMount(() => {
     ctx = canvas.getContext('2d');
@@ -34,6 +36,19 @@
           x * scale.x, y * scale.y,
           scale.x, scale.y
         );
+      }
+    }
+    {
+      const ctx = grid.getContext('2d');
+      ctx.imageSmoothingEnabled = false;
+      ctx.strokeStyle = 'rgb(25, 25, 25, 0.5)';
+      for (let i = 0, y = 0; y < size.y; y += 1) {
+        for (let x = 0; x < size.x; x += 1, i += 1) {
+          ctx.strokeRect(
+            x * scale.x, y * scale.y,
+            scale.x, scale.y
+          );
+        }
       }
     }
   });
@@ -49,8 +64,8 @@
     const i = (size.x * y) + x;
     switch (tool) {
       default: {
-        ctx.fillStyle = `rgb(${$color.join(',')})`;
         pixels[i] = $color;
+        ctx.fillStyle = `rgb(${$color.join(',')})`;
         ctx.fillRect(
           x * scale.x, y * scale.y,
           scale.x, scale.y
@@ -84,13 +99,22 @@
 
 <creator>
   <half>
-    <canvas
-      bind:this={canvas}
-      width={size.x * scale.x}
-      height={size.y * scale.y}
-      on:mousedown={onMouseDown}
-      on:mousemove={onMouseMove}
-    />
+    <pixels>
+      <canvas
+        bind:this={canvas}
+        width={size.x * scale.x}
+        height={size.y * scale.y}
+        on:mousedown={onMouseDown}
+        on:mousemove={onMouseMove}
+      />
+      <canvas
+        class="grid"
+        class:visible={showGrid}
+        bind:this={grid}
+        width={size.x * scale.x}
+        height={size.y * scale.y}
+      />
+    </pixels>
   </half>
   <half>
     <div>
@@ -108,6 +132,13 @@
         >
           Pick
         </button>
+        <label>
+          <input
+            type="checkbox"
+            bind:checked={showGrid}
+          />
+          Show grid
+        </label>
       </tools>
       <ColorPicker
         bind:color={color}
@@ -133,11 +164,27 @@
     min-height: 100%;
   }
 
-  canvas {
-    display: block;
+  pixels {
+    position: relative;
     background: #000;
     border: 8px solid #222;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+
+  canvas {
+    display: block;
+  }
+
+  canvas.grid {
+    position: absolute;
+    display: none;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+  }
+
+  canvas.grid.visible {
+    display: block;
   }
 
   half {
@@ -171,6 +218,16 @@
 
   tools > button, tools > color {
     margin: 0 0.25rem;
+  }
+
+  tools > label {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+  }
+  
+  tools > label > input {
+    margin-right: 0.5rem;
   }
 
   actions {

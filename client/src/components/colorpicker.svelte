@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   
-  export let color = writable([0xFF, 0, 0])
+  export const color = writable([0xFF, 0, 0])
 
   const width = 330;
   const height = 330;

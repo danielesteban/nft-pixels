@@ -56,11 +56,18 @@
     {/if}
   </route>
   <toolbar>
-    <brand>
-      <a href="#/">
-        PixelTokens
-      </a>
-    </brand>
+    <div>
+      <brand>
+        <a href="#/">
+          nft-pixels
+        </a>
+      </brand>
+      <credits>
+        <a href="https://dani.gatunes.com/">
+          dani@gatunes
+        </a> © 2020
+      </credits>
+    </div>
     <div>
       <create>
         <a href="#/new">
@@ -111,6 +118,13 @@
 
   brand {
     letter-spacing: 0.2rem;
+  }
+
+  credits {
+    border-left: 1px solid #999;
+    color: #ccc;
+    margin: 0 1em;
+    padding: 0 1em;
   }
 
   create {

@@ -117,7 +117,7 @@
 
   placeholder {
     display: block;
-    width: 208px;
-    height: 312px;
+    width: 224px;
+    height: 336px;
   }
 </style>

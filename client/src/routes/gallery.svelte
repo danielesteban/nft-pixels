@@ -10,7 +10,7 @@
     {/each}
   {:else}
     <loading>
-      Loading...
+      Loading tokens...
     </loading>
   {/if}
 </gallery>
@@ -29,6 +29,6 @@
 
   loading {
     display: block;
-    margin: 6rem;
+    padding-top: 2rem;
   }
 </style>

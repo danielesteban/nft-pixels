@@ -31,6 +31,7 @@ export default {
     commonjs(),
     json(),
     replace({
+      __NetworkId__: JSON.stringify(process.env.NETWORK_ID),
       __OffersAddress__: JSON.stringify(process.env.OFFERS_ADDRESS),
       __TokensAddress__: JSON.stringify(process.env.TOKENS_ADDRESS),
     }),

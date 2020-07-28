@@ -3,6 +3,7 @@
     "browser": true
   },
   "globals": {
+    "__NetworkId__": "readonly",
     "__OffersAddress__": "readonly",
     "__TokensAddress__": "readonly"
   },

@@ -14,24 +14,48 @@ export const hasWeb3Support = !!web3;
 
 let contract;
 let offers;
-if (hasWeb3Support) {
-  const { TruffleContract } = window;
-  Promise.all(
-    [
-      { artifact: TokenOffer, address: __OffersAddress__ },
-      { artifact: PixelsToken, address: __TokensAddress__ },
-    ].map(({ artifact, address }) => {
-      const contract = TruffleContract(artifact);
-      contract.setProvider(web3.currentProvider);
-      return contract.at(address);
-    })
-  )
-    .then(([offersInstance, tokensInstance]) => {
-      offers = offersInstance;
-      contract = tokensInstance;
-      tokens.fetch(); // eslint-disable-line no-use-before-define
-    });
-}
+export const status = (() => {
+  const { subscribe, set } = writable('unsupported');
+  if (hasWeb3Support) {
+    set('loading');
+    const { TruffleContract } = window;
+    (__NetworkId__ ? (
+      web3.eth.net.getId()
+        .then((networkId) => {
+          if (networkId.toString() !== __NetworkId__) {
+            throw new Error('wrongnetwork');
+          }
+        })
+    ) : Promise.resolve())
+      .then(() => (
+        Promise.all(
+          [
+            { artifact: TokenOffer, address: __OffersAddress__ },
+            { artifact: PixelsToken, address: __TokensAddress__ },
+          ].map(({ artifact, address }) => {
+            const contract = TruffleContract(artifact);
+            contract.setProvider(web3.currentProvider);
+            return contract.at(address);
+          })
+        )
+          .then(([offersInstance, tokensInstance]) => {
+            offers = offersInstance;
+            contract = tokensInstance;
+            set('ready');
+            tokens.fetch(); // eslint-disable-line no-use-before-define
+          })
+          .catch(() => {
+            throw new Error('error');
+          })
+      ))
+      .catch(({ message }) => (
+        set(message)
+      ));
+  }
+  return {
+    subscribe,
+  };
+})();
 
 export const account = (() => {
   const { subscribe, set } = writable();

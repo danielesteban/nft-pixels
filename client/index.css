@@ -7,6 +7,10 @@ body {
   font-family: monospace;
 }
 
+a {
+  color: inherit;
+}
+
 button {
   box-sizing: border-box;
   background: #333;

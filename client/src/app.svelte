@@ -1,6 +1,6 @@
 <script>
   import { hasWeb3Support } from './services/contract';
-  import Tools from './components/tools.svelte';
+  import Account from './components/account.svelte';
   import Creator from './routes/creator.svelte';
   import Gallery from './routes/gallery.svelte';
   import Item from './routes/item.svelte';
@@ -8,12 +8,11 @@
 
   let route = {
     component: Unsupported,
-    params: [],
   };
 
   if (hasWeb3Support) {
     // This should prolly be a service that just exports a store.
-    // Maybe use the history module and path-to-regex schema.
+    // Maybe use the history module and a path-to-regex schema.
     // But this quick&dirty hash router should work for now.
     const onLocationChange = () => {
       const [id, ...params] = document.location.hash.substr(2).split('/').map((value) => (
@@ -30,7 +29,7 @@
           route.component = Item;
           break;
       }
-      route.params = params;
+      route.params = params.length ? params : undefined;
     };
     window.addEventListener('hashchange', onLocationChange);
     onLocationChange();
@@ -39,12 +38,25 @@
 
 <app>
   <route>
-    <svelte:component this={route.component} params={route.params} />
+    <svelte:component
+      this={route.component}
+      {...(route.params ? { params: route.params } : {})}
+    />
   </route>
   <toolbar>
-    {#if hasWeb3Support}
-      <Tools />
-    {/if}
+    <brand>
+      <a href="#/">
+        PixelTokens
+      </a>
+    </brand>
+    <div>
+      <create>
+        <a href="#/new">
+          <button>Create your own</button>
+        </a>
+      </create>
+      <Account />
+    </div>
   </toolbar>
 </app>
 
@@ -63,12 +75,25 @@
   toolbar {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     width: 100%;
     height: 64px;
-    padding: 1rem 0;
+    padding: 1rem;
     box-sizing: border-box;
     background: #222;
     border-top: 2px solid #000;
+  }
+
+  toolbar > div {
+    display: flex;
+    align-items: center;
+  }
+
+  brand {
+    letter-spacing: 0.2rem;
+  }
+
+  create {
+    margin-right: 1rem;
   }
 </style>

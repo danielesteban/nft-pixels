@@ -9,12 +9,24 @@ module.exports = {
       network_id: '*',
     },
     rinkeby: {
-      provider: () => new HDWalletProvider(
+      provider: new HDWalletProvider(
         process.env.MNEMONICS,
-        `https://rinkeby.infura.io/v3/${process.env.PROJECT_ID}`
+        `https://rinkeby:.infura.io/v3/${process.env.PROJECT_ID}`
       ),
       network_id: 4,
-      gas: 3000000,
+      gas: 5000000,
+      gasPrice: 5000000000, // 5 Gwei
+      skipDryRun: true,
+    },
+    ropsten: {
+      provider: new HDWalletProvider(
+        process.env.MNEMONICS,
+        `https://ropsten.infura.io/v3/${process.env.PROJECT_ID}`
+      ),
+      network_id: 3,
+      gas: 5000000,
+      gasPrice: 5000000000, // 5 Gwei
+      skipDryRun: true,
     },
   },
   mocha: {

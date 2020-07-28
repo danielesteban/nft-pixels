@@ -127,7 +127,9 @@
     {:else}
       <div>
         <tools>
-          <color style={$color ? `background: rgb(${$color.join(',')})` : ''}></color>
+          <color
+            style={$color ? `background: rgb(${$color.join(',')})` : ''}
+          />
           <button
             class:primary={tool === 'paint'}
             on:click={() => { tool = 'paint'; }}
@@ -213,6 +215,7 @@
     width: 32px;
     height: 32px;
     border-radius: 4px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
   }
 
   tools, actions {
@@ -240,7 +243,7 @@
   }
 
   actions {
-    margin: 3rem 0 1rem;
+    margin: 4rem 0 2rem;
     justify-content: center;
   }
 

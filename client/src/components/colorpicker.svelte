@@ -117,12 +117,13 @@
         && pointer.y <= y + height
       ) {
         const imageData = ctx.getImageData(pointer.x, pointer.y, 1, 1).data;
-        $color = [
-          imageData[0],
-          imageData[1],
-          imageData[2]
-        ];
-        if (i === 1) {
+        if (i === 0) {
+          $color = [
+            imageData[0],
+            imageData[1],
+            imageData[2]
+          ];
+        } else {
           area.color = [
             imageData[0],
             imageData[1],
@@ -141,6 +142,25 @@
   const onMouseUp = () => {
     isPicking = false;
   };
+
+  let pallete = [...Array(8)].map((v, i) => (
+    i > 0 ? [0, 0, 0] : $color
+  ));
+
+  $: if (
+    !isPicking
+    && $color !== pallete[0]
+    && !pallete.find(([r, g, b]) => (
+      $color[0] === r
+      && $color[1] === g
+      && $color[2] === b
+    )) 
+  ) {
+    pallete = [
+      $color,
+      ...pallete.slice(0, pallete.length - 1)
+    ];
+  }
 </script>
 
 <svelte:window on:blur={onMouseUp} on:mouseup={onMouseUp} />
@@ -153,11 +173,37 @@
   on:mousemove={onMouseMove}
 />
 
+<pallete>
+  {#each pallete as color}
+    <color
+      style="background: rgb({color.join(',')})"
+      on:click={() => update(color)}
+    />
+  {/each}
+</pallete>
+
 <style>
   canvas {
     display: block;
     background: #000;
     border: 8px solid #222;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+
+  pallete {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  color {
+    display: block;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    margin: 0 0.25rem;
+    border: 1px solid #222;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
   }
 </style>

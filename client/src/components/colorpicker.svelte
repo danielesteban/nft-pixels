@@ -82,18 +82,22 @@
   onMount(() => {
     ctx = canvas.getContext('2d');
     ctx.imageSmoothingEnabled = false;
+    draw();
   });
 
-  let fromPicker = false;
-  $: if ($color && ctx) {
-    if (!fromPicker) {
-      area.color = $color;
+  export const update = (rgb) => {
+    area.color = rgb;
+    $color = rgb;
+    if (ctx) {
       draw();
     }
-    fromPicker = false;
-  }
+  };
 
-  const onClick = ({ clientX, clientY }) => {
+  let isPicking = false;
+  const onMouseMove = ({ clientX, clientY }) => {
+    if (!isPicking) {
+      return;
+    }
     const rect = canvas.getBoundingClientRect();
     const pointer = {
       x: ((clientX - rect.left) / (rect.right - rect.left)) * width,
@@ -113,31 +117,40 @@
         && pointer.y <= y + height
       ) {
         const imageData = ctx.getImageData(pointer.x, pointer.y, 1, 1).data;
-        if (i === 0) {
-          fromPicker = true;
-        } else {
-          area.color = [
-            imageData[0],
-            imageData[1],
-            imageData[2]
-          ];
-        }
         $color = [
           imageData[0],
           imageData[1],
           imageData[2]
         ];
+        if (i === 1) {
+          area.color = [
+            imageData[0],
+            imageData[1],
+            imageData[2]
+          ];
+          draw();
+        }
         break;
       }
     }
   };
+  const onMouseDown = (e) => {
+    isPicking = true;
+    onMouseMove(e);
+  };
+  const onMouseUp = () => {
+    isPicking = false;
+  };
 </script>
+
+<svelte:window on:blur={onMouseUp} on:mouseup={onMouseUp} />
 
 <canvas
   bind:this={canvas}
   width={width}
   height={height}
-  on:click={onClick}
+  on:mousedown={onMouseDown}
+  on:mousemove={onMouseMove}
 />
 
 <style>

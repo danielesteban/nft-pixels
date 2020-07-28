@@ -16,6 +16,7 @@
     ];
   });
   let color;
+  let pick;
   let tool = 'paint';
   $: if ($color) tool = 'paint';
 
@@ -58,7 +59,7 @@
       }
       case 'pick': {
         isDrawing = false;
-        $color = pixels[i];
+        pick(pixels[i]);
         break;
       }
     }
@@ -75,7 +76,7 @@
     mint({ account: $account, pixels })
       .then(() => {
         document.location.hash = '#/';
-      });
+      })
   );
 </script>
 
@@ -108,7 +109,10 @@
           Pick
         </button>
       </tools>
-      <ColorPicker bind:color={color} />
+      <ColorPicker
+        bind:color={color}
+        bind:update={pick}
+      />
       <actions>
         <button
           class:primary={$account}

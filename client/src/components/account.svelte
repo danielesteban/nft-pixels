@@ -1,11 +1,15 @@
 <script>
   import { account, hasWeb3Support } from '../services/contract';
   const onRequestAccount = () => account.request();
+
+  $: formattedAccount = $account ? (
+    `${$account.slice(0, 6)}...${$account.slice(-4)}`
+  ) : undefined;
 </script>
 
 <account>
   {#if $account}
-    {$account}
+    {formattedAccount}
   {:else}
     <button
       class="primary"

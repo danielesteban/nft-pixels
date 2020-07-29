@@ -16,7 +16,8 @@
     ];
   });
   let color;
-  let pick;
+  let addToPalette;
+  let setColor;
   let showGrid = false;
   let tool = 'paint';
   $: if ($color) tool = 'paint';
@@ -55,6 +56,7 @@
 
   let isDrawing = false;
   let isMinting = false;
+  let lastColor;
   const onMouseMove = ({ clientX, clientY }) => {
     if (!isDrawing || isMinting) {
       return;
@@ -75,9 +77,13 @@
       }
       case 'pick': {
         isDrawing = false;
-        pick(pixels[i]);
+        setColor(pixels[i]);
         break;
       }
+    }
+    if (pixels[i] !== lastColor) {
+      lastColor = pixels[i];
+      addToPalette(pixels[i]);
     }
   };
   const onMouseDown = (e) => {
@@ -152,7 +158,8 @@
         </tools>
         <ColorPicker
           bind:color={color}
-          bind:update={pick}
+          bind:addToPalette={addToPalette}
+          bind:setColor={setColor}
         />
         <actions>
           <button

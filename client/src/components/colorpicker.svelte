@@ -85,7 +85,24 @@
     draw();
   });
 
-  export const update = (rgb) => {
+  let palette = [...Array(8)].map((v, i) => [0, 0, 0]);
+
+  export const addToPalette = (rgb) => {
+    if (
+      !palette.find(([r, g, b]) => (
+        rgb[0] === r
+        && rgb[1] === g
+        && rgb[2] === b
+      )) 
+    ) {
+      palette = [
+        rgb,
+        ...palette.slice(0, palette.length - 1)
+      ];
+    }
+  };
+
+  export const setColor = (rgb) => {
     area.color = rgb;
     $color = rgb;
     if (ctx) {
@@ -142,25 +159,6 @@
   const onMouseUp = () => {
     isPicking = false;
   };
-
-  let pallete = [...Array(8)].map((v, i) => (
-    i > 0 ? [0, 0, 0] : $color
-  ));
-
-  $: if (
-    !isPicking
-    && $color !== pallete[0]
-    && !pallete.find(([r, g, b]) => (
-      $color[0] === r
-      && $color[1] === g
-      && $color[2] === b
-    )) 
-  ) {
-    pallete = [
-      $color,
-      ...pallete.slice(0, pallete.length - 1)
-    ];
-  }
 </script>
 
 <svelte:window on:blur={onMouseUp} on:mouseup={onMouseUp} />
@@ -173,14 +171,14 @@
   on:mousemove={onMouseMove}
 />
 
-<pallete>
-  {#each pallete as color}
+<palette>
+  {#each palette as color}
     <color
       style="background: rgb({color.join(',')})"
-      on:click={() => update(color)}
+      on:click={() => setColor(color)}
     />
   {/each}
-</pallete>
+</palette>
 
 <style>
   canvas {
@@ -190,7 +188,7 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   }
 
-  pallete {
+  palette {
     margin-top: 1rem;
     display: flex;
     align-items: center;

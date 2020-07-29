@@ -46,7 +46,7 @@
           Please open in an Ethereum enabled browser
           (or install <a href="https://metamask.io/" target="_blank">MetaMask</a>).
         {:else if $status === 'wrongnetwork'}
-          Please switch to network id: "{networkId}" and reload the page.
+          Please switch to network id: "{networkId}"
         {:else if $status === 'error'}
           Error loading contracts
         {:else if $status === 'loading'}

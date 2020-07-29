@@ -2,7 +2,7 @@ import { writable } from 'svelte/store';
 import PixelsToken from '../../artifacts/PixelsToken.json';
 import TokenOffer from '../../artifacts/TokenOffer.json';
 
-const { Web3 } = window;
+const { TruffleContract, Web3 } = window;
 const web3 = Web3.givenProvider ? (
   new Web3(Web3.givenProvider)
 ) : undefined;
@@ -15,9 +15,10 @@ let contract;
 let offers;
 export const status = (() => {
   const { subscribe, set } = writable('unsupported');
-  if (hasWeb3Support) {
+  const load = () => {
+    contract = undefined;
+    offers = undefined;
     set('loading');
-    const { TruffleContract } = window;
     (__NetworkId__ ? (
       web3.eth.net.getId()
         .then((networkId) => {
@@ -38,8 +39,8 @@ export const status = (() => {
           })
         )
           .then(([offersInstance, tokensInstance]) => {
-            offers = offersInstance;
             contract = tokensInstance;
+            offers = offersInstance;
             set('ready');
             tokens.fetch(); // eslint-disable-line no-use-before-define
           })
@@ -50,6 +51,10 @@ export const status = (() => {
       .catch(({ message }) => (
         set(message)
       ));
+  };
+  if (hasWeb3Support) {
+    load();
+    web3.currentProvider.on('chainChanged', load);
   }
   return {
     subscribe,

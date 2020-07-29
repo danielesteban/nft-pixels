@@ -63,9 +63,14 @@
         </a>
       </brand>
       <credits>
-        <a href="https://dani.gatunes.com/">
+        <a href="https://dani.gatunes.com/" target="_blank">
           dani@gatunes
         </a> © 2020
+      </credits>
+      <credits>
+        <a href="https://github.com/danielesteban/nft-pixels" target="_blank">
+          view source
+        </a>
       </credits>
     </div>
     <div>
@@ -123,8 +128,8 @@
   credits {
     border-left: 1px solid #999;
     color: #ccc;
-    margin: 0 1em;
-    padding: 0 1em;
+    margin-left: 1em;
+    padding-left: 1em;
   }
 
   create {

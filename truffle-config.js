@@ -11,7 +11,7 @@ module.exports = {
     rinkeby: {
       provider: new HDWalletProvider(
         process.env.MNEMONICS,
-        `https://rinkeby:.infura.io/v3/${process.env.PROJECT_ID}`
+        `https://rinkeby.infura.io/v3/${process.env.PROJECT_ID}`
       ),
       network_id: 4,
       gas: 5000000,
